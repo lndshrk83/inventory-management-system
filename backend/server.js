@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { pool } from './src/config/db.js';
 import productsRouter from './src/routes/products.js';
 import suppliersRouter from './src/routes/suppliers.js';
+import authRouter from './src/routes/auth.js';
 
 dotenv.config();
 
@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
   res.send('Inventory Management System API is running');
 });
 
+app.use('/auth', authRouter);
 app.use('/products', productsRouter);
 app.use('/suppliers', suppliersRouter);
 
