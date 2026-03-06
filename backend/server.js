@@ -1,8 +1,8 @@
+import productsRouter from './src/routes/products.js';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { pool } from './src/config/db.js';
-import productsRouter from './src/routes/products.js';
 
 dotenv.config();
 
