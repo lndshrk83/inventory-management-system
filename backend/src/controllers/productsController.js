@@ -5,7 +5,6 @@ export const getAllProducts = async (req, res) => {
     const result = await pool.query('SELECT * FROM products');
     res.json(result.rows);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -23,7 +22,48 @@ export const createProduct = async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, price, supplier_id, category_id } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE products
+       SET name = $1, description = $2, price = $3, supplier_id = $4, category_id = $5
+       WHERE id = $6
+       RETURNING *`,
+      [name, description, price, supplier_id, category_id, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM products WHERE id = $1 RETURNING *`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
 };
